@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Operación{% endblock %}
+
+{% block buttons %}
+<p><a href="/">Movimientos</a> | <a href="/purchase" class="not-active">Operación</a> | <a href="/status">Inversión</a> | <a href="/saldo">Saldo</a></p>
+{% endblock %}
+
+{% block contenido %}
+<p class="page-title">Compra de Cryptos</p>
+<section class="content2">
+    <form action="/purchase" method="post">
+        {{ formulary.hidden_tag() }}
+        <div>
+            <label for="coinsfrom">From:</label>
+            {{ formulary.coinsfrom }}
+
+            <label for="coinsto" id="to1">to:</label>
+            {{ formulary.coinsto }}
+        </div>
+        <div class="formularyfield">
+            {{ formulary.quantityfrom.label() }}
+            {{ formulary.quantityfrom() }}
+            {% for error in formulary.quantityfrom.error %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+            {{ formulary.calculadora() }}
+            <label id="to" for="ea">Q:</label><p id="quantities" style="display: inline-block;">{{ formulary.quantityto }}</p>
+        </div>
+        <div>
+            <label id="pu" for="ea">P.U:</label><p id="quantities" style="display: inline-block;">{{ formulary.pu }}</p>
+        </div>
+        <div>
+            <a href="/purchase" class="red-button">X</a>
+            <p id="submit">{{ formulary.submit() }}</p>
+        </div>
+    </form>
+</section>   
+    {% endblock %}

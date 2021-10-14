@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Inversión{% endblock %}
+
+{% block buttons %}
+<p><a href="/">Movimientos</a> | <a href="/purchase">Operación</a> | <a href="/status" class="not-active">Inversión</a> | <a href="/saldo">Saldo</a></p>
+{% endblock %}
+
+{% block contenido %}
+    <p class="page-title">Estado de la inversión</p>
+    <section class="content2">
+        <div>
+            <label class="invertido">Invertido:</label>
+        </div>        
+        <label class="valor">Valor actual:</label>
+        <form method="get" action="/purchase">
+            <a href="/purchase" id="statusbutton" class="red-button">Volver</a>
+        </form>
+    </section>
+{% endblock %}

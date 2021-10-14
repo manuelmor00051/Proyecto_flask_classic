@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Movimientos{% endblock %}
+
+{% block buttons %}
+<p><a href="/" class="not-active">Movimientos</a> | <a href="/purchase">Operación</a> | <a href="/status">Inversión</a> | <a href="/saldo">Saldo</a></p>
+{% endblock %}
+
+{% block contenido %}
+
+<table class="paper" border="1">
+    <caption id="tabla" class="page-title">Movimientos</caption>
+    <tr>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>From</th>
+        <th>Q</th>
+        <th>To</th>
+        <th>Q</th>
+        <th>P.U</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.fecha }}</td>
+        <td>{{ item.hora }}</td>
+        <td>{{ item.from }}</td>
+        <td>{{ item.qf }}</td>
+        <td>{{ item.to }}</td>
+        <td>{{ item.qt }}</td>
+        <td>{{ item.pu }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<div>
+    <a href="/status" id="Mbutton" class="red-button">Status</a>
+    <a href="/purchase" id="another" class="red-button">+</a>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+:root {
+    --color-encabezados: #696773;
+    --blanco: #fafafa;
+    --separación: 8px;
+}
+
+header * {
+    background-color: var(--color-encabezados);
+    color: var(--blanco);
+    font-size: 1.5rem;
+    padding: 2rem;
+}
+
+footer * {
+    background-color: var(--color-encabezados);
+    color: var(--blanco);
+    font-size: 0.9rem;
+    padding: 1rem;
+    margin-top: calc(5 * var(--separación));
+}
+
+table.paper {
+    width: 100%;
+}
+
+.page-title {
+    font-size: 2rem;
+    color: var(--color-encabezados);
+    text-align: center;
+
+}
+
+.content {
+    max-width: 1350px;
+    margin: 0 auto;
+}
+
+.content2 {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.not-active {
+    pointer-events: none;
+    cursor: default;
+}
+
+.calculator {
+    width: 3.6rem;
+    height: 3rem;
+    background-color: #fafafa;
+    border-color: #fafafa;
+    display: inline-block;
+    
+}
+
+.formularyfield input:not([type="radio"]) {
+    width: 20%;
+    margin-top: calc(200 * var(--separación));
+}
+
+.button {
+    background-color: #f4fdd9;
+    color: black;
+}
+
+#tabla{
+    margin-bottom: calc(2 * var(--separación));
+}
+
+#to {
+    margin-left: 40.5%;
+}
+
+#to1 {
+    margin-left: 39.4%;
+    font-size: 1.2;
+}
+
+#another {
+    margin-left: 81%;
+}
+
+#Mbutton {
+    margin-top: calc(4 * var(--separación));
+}
+
+#pu {
+    margin-left: 67.5%;
+}
+
+label {
+    font-size: 1.2rem;
+}
+
+#statusbutton {
+    margin-left: 80%;
+}
+
+.invertido {
+    margin-left: 37.55%;
+}
+
+.valor {
+    margin-left: 35%;
+}
+
+#submit {
+    display: inline-block;
+    margin-left: 63%;
+}
+
+#quantities {
+    margin-left: 3%;
+    font-size: 1.2rem;
+}

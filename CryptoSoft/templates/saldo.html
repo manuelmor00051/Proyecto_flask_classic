@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Saldo Monedas{% endblock %}
+
+{% block buttons %}
+<p><a href="/">Movimientos</a> | <a href="/purchase">Operación</a> | <a href="/status">Inversión</a> | <a href="/saldo" class="not-active">Saldo</a></p>
+{% endblock %}
+
+{% block contenido %}
+
+<table class="paper" border="1">
+    <caption id="tabla" class="page-title">Saldo Monedas</caption>
+    <tr>
+        <th>ETH</th>
+        <th>LTC</th>
+        <th>BNB</th>
+        <th>EOS</th>
+        <th>XLM</th>
+        <th>TRX</th>
+        <th>BTC</th>
+        <th>XRP</th>
+        <th>BCH</th>
+        <th>USDT</th>
+        <th>BSV</th>
+        <th>ADA</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.ETH }}</td>
+        <td>{{ item.LTC }}</td>
+        <td>{{ item.BNB }}</td>
+        <td>{{ item.EOS }}</td>
+        <td>{{ item.XLM }}</td>
+        <td>{{ item.TRX }}</td>
+        <td>{{ item.BTC }}</td>
+        <td>{{ item.XRP }}</td>
+        <td>{{ item.BCH }}</td>
+        <td>{{ item.USDT }}</td>
+        <td>{{ item.BSV }}</td>
+        <td>{{ item.ADA }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
