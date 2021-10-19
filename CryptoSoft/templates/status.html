@@ -10,9 +10,9 @@
     <p class="page-title">Estado de la inversión</p>
     <section class="content2">
         <div>
-            <label class="invertido">Invertido:</label>
+            <label class="invertido">Invertido:</label><p id="quantities" style="display: inline-block;">{{ inv }}€</p>
         </div>        
-        <label class="valor">Valor actual:</label>
+        <label class="valor">Valor actual:</label><p id="quantities" style="display: inline-block;">{{ value }}€</p>
         <form method="get" action="/purchase">
             <a href="/purchase" id="statusbutton" class="red-button">Volver</a>
         </form>

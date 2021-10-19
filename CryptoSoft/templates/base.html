@@ -18,7 +18,7 @@
         </nav>
         {% with mensajes = get_flashed_messages() %}
             {% for mensaje in mensajes %}
-                <p class="mensaje">mensaje</p>
+                <p class="mensaje">{{ mensaje }}</p>
             {% endfor %}
         {% endwith%}
         {% block contenido %}{% endblock %}

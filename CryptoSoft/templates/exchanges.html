@@ -25,10 +25,10 @@
                 <p class="error">{{ error }}</p>
             {% endfor %}
             {{ formulary.calculadora() }}
-            <label id="to" for="ea">Q:</label><p id="quantities" style="display: inline-block;">{{ formulary.quantityto }}</p>
+            <label id="to" for="quantityto">Q:</label><p id="quantities" style="display: inline-block;">{{ formulary.quantityto.data }}</p>
         </div>
         <div>
-            <label id="pu" for="ea">P.U:</label><p id="quantities" style="display: inline-block;">{{ formulary.pu }}</p>
+            <label id="pu" for="pu">P.U:</label><p id="quantities" style="display: inline-block;">{{ formulary.pu.data }}</p>
         </div>
         <div>
             <a href="/purchase" class="red-button">X</a>

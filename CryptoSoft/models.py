@@ -27,12 +27,36 @@ class BBDDoperations():
         con.close()
         return records
 
+    def recordMovements(self, consult, lista):
+        con = sqlite3.connect(self.url_BBDDates)
+        cur = con.cursor()
+        cur.execute(consult, lista)
+        con.commit()
+        con.close()
+
+    def getAvaibleCoins(self):
+        consult = "SELECT * FROM saldo"
+        con = sqlite3.connect(self.url_BBDDates)
+        cur = con.cursor()
+        cur.execute(consult)
+        quantities = cur.fetchall()
+        quantities = quantities[0]
+
+        keys = []
+        for index in range(len(cur.description)):
+            if quantities[index] > 0:
+                keys.append((cur.description[index][0], cur.description[index][0]))
+
+        con.close()
+        return keys
+
+
 class ConectApi():
-    def conecta(fcoin, tcoin):
+    def conecta(fcoin, tcoin, api_key):
         url = 'https://pro-api.coinmarketcap.com/v1/tools/price-conversion?amount=1&symbol={}&convert={}'.format(fcoin, tcoin)
 
         headers = {
-            'Accepts': 'application/json', 'X-CMC_PRO_API_KEY': '49a64db8-368a-4fa7-84cf-662392101276'
+            'Accepts': 'application/json', 'X-CMC_PRO_API_KEY': api_key
         }
 
         session = Session()
@@ -44,5 +68,3 @@ class ConectApi():
             return data['data']['quote'][tcoin]['price']
         except (ConnectionError, TooManyRedirects, Timeout) as e:
             return e
-
-             #con variable.data['status']['error_code'] saco el código del error que debe ser 0 para que todo vaya bien
