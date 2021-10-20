@@ -21,14 +21,15 @@
         <div class="formularyfield">
             {{ formulary.quantityfrom.label() }}
             {{ formulary.quantityfrom() }}
-            {% for error in formulary.quantityfrom.error %}
-                <p class="error">{{ error }}</p>
-            {% endfor %}
-            {{ formulary.calculadora() }}
+        </div>
+        <div>
             <label id="to" for="quantityto">Q:</label><p id="quantities" style="display: inline-block;">{{ formulary.quantityto.data }}</p>
         </div>
         <div>
             <label id="pu" for="pu">P.U:</label><p id="quantities" style="display: inline-block;">{{ formulary.pu.data }}</p>
+        </div>
+        <div>
+            <p style="display: inline-block;">{{ formulary.calculadora() }}</p>
         </div>
         <div>
             <a href="/purchase" class="red-button">X</a>

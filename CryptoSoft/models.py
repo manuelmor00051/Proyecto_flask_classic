@@ -45,7 +45,10 @@ class BBDDoperations():
         keys = []
         for index in range(len(cur.description)):
             if quantities[index] > 0:
-                keys.append((cur.description[index][0], cur.description[index][0]))
+                if cur.description[index][0] == "inversión":
+                    pass
+                else:
+                    keys.append(cur.description[index][0])
 
         con.close()
         return keys

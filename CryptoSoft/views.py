@@ -26,18 +26,17 @@ def exchanges():
     form = Form()
     if request.method == 'GET':
         form = Form()
-        try:
-            coins  = manager.getAvaibleCoins()
-        except:
-            flash("Error de conexión a la base de datos")
-            return render_template("exchanges.html", formulary = form)
-        for i in range(len(coins)):
-            lista.append(coins[i])
-        form.lista = lista
         return render_template("exchanges.html", formulary=form)
     else:
         if form.validate():
             if form.calculadora.data:
+                form.quantityfromH.data = form.quantityfrom.data
+                if form.coinsfrom.data != 'EUR' and form.coinsfrom.data != "--Seleccione Criptomoneda--":
+                    cantcoin = manager.consultation("SELECT {} FROM saldo".format(form.coinsfrom.data))
+                    maxsale = cantcoin[0][form.coinsfrom.data]
+                    if float(form.quantityfromH.data) > maxsale:
+                        flash("No puede invertir una cantidad superior al saldo disponible")
+                        return render_template("exchanges.html", formulary=form)
                 if form.coinsfrom.data == "--Seleccione Criptomoneda--":
                     flash("Debe seleccionar una criptomoneda origen")
                     return render_template("exchanges.html", formulary=form)
@@ -48,13 +47,15 @@ def exchanges():
                 if form.coinsfrom.data == form.coinsto.data:
                     flash("Las monedas de origen y destino no deben coincidir")
                     return render_template("exchanges.html", formulary=form)
+                if form.quantityfrom.data <= 0:
+                    flash("La cantidad debe ser un numero positivo mayor que 0")
+                    return render_template("exchanges.html", formulary=form)
                 try:
                     form.pu.data = 1 / ConectApi.conecta(form.coinsfrom.data, form.coinsto.data, api_key)
                 except:
                     flash("Error de conexión con la API")
                     return render_template("exchanges.html", formulary=form)
                 form.puH.data = form.pu.data
-                form.quantityfromH.data = form.quantityfrom.data
                 form.quantityto.data = float(form.quantityfromH.data) / form.pu.data
                 form.quantitytoH.data = form.quantityto.data
                 return render_template("exchanges.html", formulary=form)
@@ -69,13 +70,19 @@ def exchanges():
                 manager.recordMovements(consult, lista)
                 if form.coinsfrom.data == 'EUR':
                     consult = "UPDATE saldo SET inversión = inversión + ?"
-                    manager.recordMovements(consult, form.quantityfromH.data)
-                    """
-                    cant = cant[0][form.coinsto.data]
-                    cant += float(form.quantitytoH.data)
-                    consult = "UPDATE saldo SET {} = ?".format(form.coinsto.data)
-                    manager.recordMovements(consult, str(cant))
-                    """
+                    manager.recordMovements(consult, [form.quantityfromH.data])
+                    consult = "UPDATE saldo SET {} = {} + ?".format(form.coinsto.data, form.coinsto.data)
+                    manager.recordMovements(consult, [form.quantitytoH.data])
+                elif form.coinsto.data == 'EUR':
+                    consult = "UPDATE saldo SET inversión = inversión - ?"
+                    manager.recordMovements(consult, [form.quantitytoH.data])
+                    consult = "UPDATE saldo SET {} = {} - ?".format(form.coinsfrom.data, form.coinsfrom.data)
+                    manager.recordMovements(consult, [form.quantityfromH.data])
+                else:
+                    consult = "UPDATE saldo SET {} = {} - ?".format(form.coinsfrom.data, form.coinsfrom.data)
+                    manager.recordMovements(consult, [form.quantityfromH.data])
+                    consult = "UPDATE saldo SET {} = {} + ?".format(form.coinsto.data, form.coinsto.data)
+                    manager.recordMovements(consult, [form.quantitytoH.data])
 
                 return redirect(url_for("movements"))
             else:
@@ -83,10 +90,10 @@ def exchanges():
                 return render_template("exchanges.html", formulary=form)
         else:
             if form.quantityfrom.data == None:
-                flash("La cantidad origen debe ser de tipo numérico")
-            if form.quantityfrom.data <= 0:
-                flash("La cantidad debe ser un numero positivo mayor que 0")
-            return render_template("exchanges.html", formulary=form)
+                    flash("La cantidad origen debe ser de tipo numérico")
+            elif form.quantityfrom.data <= 0:
+                    flash("La cantidad debe ser un numero positivo mayor que 0")
+            return render_template("exchanges.html", formulary=form) 
 
 @app.route("/status")
 def investment():
