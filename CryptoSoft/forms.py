@@ -8,19 +8,22 @@ from CryptoSoft.models import BBDDoperations
 from . import app
 
 class Form(FlaskForm):
-                url_BBDates = app.config.get("BASE_DE_DATOS")
-                manager = BBDDoperations(url_BBDates)
-                coins = manager.getAvaibleCoins()
-                lista = ["--Seleccione Criptomoneda--", "EUR"]
-                for coin in coins:
-                    lista.append(coin)
-                coinsfrom = SelectField(u'Seleccione criptomoneda', choices = lista)
-                coinsto = SelectField(u'Seleccione criptomoneda', choices=[('0', '--Seleccione criptomoneda--'), ('EUR', 'EUR'), ('ETH', 'ETH'), ('LTC', 'LTC'), ('BNB', 'BNB'), ('EOS', 'EOS'), ('XLM', 'XLM'), ('TRX', 'TRX'), ('BTC', 'BTC'), ('XRP', 'XRP'), ('BCH', 'BCH'), ('USDT', 'USDT'), ('BSV', 'BSV'), ('ADA', 'ADA')])
-                quantityfrom = FloatField("Q: ", validators=[DataRequired(message="debe informar una cantidad"), NumberRange(message="debe informar una cantidad positiva", min=0.01)])
-                quantityfromH = HiddenField()
-                pu = FloatField("P.U.: ")
-                puH = HiddenField()
-                quantityto = FloatField("Q :")
-                quantitytoH = HiddenField()
-                submit = SubmitField('Aceptar')
-                calculadora = SubmitField('Calcular')
+    coinsfrom = SelectField(u'Seleccione criptomoneda', choices = [])
+    coinsto = SelectField(u'Seleccione criptomoneda', choices=[('0', '--Seleccione criptomoneda--'), ('EUR', 'EUR'), ('ETH', 'ETH'), ('LTC', 'LTC'), ('BNB', 'BNB'), ('EOS', 'EOS'), ('XLM', 'XLM'), ('TRX', 'TRX'), ('BTC', 'BTC'), ('XRP', 'XRP'), ('BCH', 'BCH'), ('USDT', 'USDT'), ('BSV', 'BSV'), ('ADA', 'ADA')])
+    quantityfrom = FloatField("Q: ", validators=[DataRequired(message="debe informar una cantidad"), NumberRange(message="debe informar una cantidad positiva", min=0.01)])
+    quantityfromH = HiddenField()
+    pu = FloatField("P.U.: ")
+    puH = HiddenField()
+    quantityto = FloatField("Q :")
+    quantitytoH = HiddenField()
+    submit = SubmitField('Aceptar')
+    calculadora = SubmitField('Calcular')
+
+def load_avaible_coins(form):
+    url_BBDates = app.config.get("BASE_DE_DATOS")
+    manager = BBDDoperations(url_BBDates)
+    coins = manager.getAvaibleCoins()
+    lista = ["--Seleccione Criptomoneda--", "EUR"]
+    for coin in coins:
+        lista.append(coin)
+    form.coinsfrom.choices = lista

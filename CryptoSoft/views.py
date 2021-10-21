@@ -1,6 +1,5 @@
-from werkzeug.utils import bind_arguments
 from . import app
-from CryptoSoft.forms import Form
+from CryptoSoft.forms import Form, load_avaible_coins
 from flask import render_template, flash, request, url_for, redirect
 from CryptoSoft.models import *
 from datetime import datetime
@@ -14,26 +13,34 @@ def movements():
     consult = "SELECT * FROM Movimientos ORDER BY fecha"
     try:
         movements_list = manager.consultation(consult)
-        if len(movements_list) == 0:
-            flash("No existen movimientos")
     except:
         flash("Error de conexión a la base de datos")
         return render_template("movements.html")
+    if len(movements_list) == 0:
+            flash("No existen movimientos")
     return render_template("movements.html", items = movements_list)
 
 @app.route("/purchase", methods=['GET', 'POST'])
 def exchanges():
     lista=[("EUR", "EUR")]
     form = Form()
+    try:
+        load_avaible_coins(form)
+    except:
+        flash("Error de conexión a la base de datos")
+        return render_template("exchanges.html", formulary=form)
     if request.method == 'GET':
-        form = Form()
         return render_template("exchanges.html", formulary=form)
     else:
         if form.validate():
             if form.calculadora.data:
                 form.quantityfromH.data = form.quantityfrom.data
                 if form.coinsfrom.data != 'EUR' and form.coinsfrom.data != "--Seleccione Criptomoneda--":
-                    cantcoin = manager.consultation("SELECT {} FROM saldo".format(form.coinsfrom.data))
+                    try:
+                        cantcoin = manager.consultation("SELECT {} FROM saldo".format(form.coinsfrom.data))
+                    except:
+                        flash("Error de conexión a la base de datos")
+                        return render_template("exchanges.html", formulary=form)
                     maxsale = cantcoin[0][form.coinsfrom.data]
                     if float(form.quantityfromH.data) > maxsale:
                         flash("No puede invertir una cantidad superior al saldo disponible")
@@ -68,23 +75,51 @@ def exchanges():
 
                 consult = "INSERT INTO movimientos (fecha, hora, coinsfrom, qf, coinsto, qt, pu) VALUES (?, ?, ?, ?, ?, ?, ?)"
                 lista = [fecha, hora, form.coinsfrom.data, form.quantityfromH.data, form.coinsto.data, form.quantitytoH.data, form.puH.data]
-                manager.recordMovements(consult, lista)
+                try:
+                    manager.recordMovements(consult, lista)
+                except:
+                    flash("Error de conexión a la base de datos")
+                    return render_template("exchanges.html", formulary=form)
                 if form.coinsfrom.data == 'EUR':
                     consult = "UPDATE saldo SET inversión = inversión + ?"
-                    manager.recordMovements(consult, [form.quantityfromH.data])
+                    try:
+                        manager.recordMovements(consult, [form.quantityfromH.data])
+                    except:
+                        flash("Error de conexión a la base de datos")
+                        return render_template("exchanges.html", formulary=form)
                     consult = "UPDATE saldo SET {} = {} + ?".format(form.coinsto.data, form.coinsto.data)
-                    manager.recordMovements(consult, [form.quantitytoH.data])
+                    try:
+                        manager.recordMovements(consult, [form.quantitytoH.data])
+                    except:
+                        flash("Error de conexión a la base de datos")
+                        return render_template("exchanges.html", formulary=form)
                 elif form.coinsto.data == 'EUR':
                     consult = "UPDATE saldo SET inversión = inversión - ?"
-                    manager.recordMovements(consult, [form.quantitytoH.data])
+                    try:
+                        manager.recordMovements(consult, [form.quantitytoH.data])
+                    except:
+                        flash("Error de conexión a la base de datos")
+                        return render_template("exchanges.html", formulary=form)
                     consult = "UPDATE saldo SET {} = {} - ?".format(form.coinsfrom.data, form.coinsfrom.data)
-                    manager.recordMovements(consult, [form.quantityfromH.data])
+                    try:
+                        manager.recordMovements(consult, [form.quantityfromH.data])
+                    except:
+                        flash("Error de conexión a la base de datos")
+                        return render_template("exchanges.html", formulary=form)
                 else:
                     consult = "UPDATE saldo SET {} = {} - ?".format(form.coinsfrom.data, form.coinsfrom.data)
-                    manager.recordMovements(consult, [form.quantityfromH.data])
+                    try:
+                        manager.recordMovements(consult, [form.quantityfromH.data])
+                    except:
+                        flash("Error de conexión a la base de datos")
+                        return render_template("exchanges.html", formulary=form)
                     consult = "UPDATE saldo SET {} = {} + ?".format(form.coinsto.data, form.coinsto.data)
-                    manager.recordMovements(consult, [form.quantitytoH.data])
-
+                    try:
+                        manager.recordMovements(consult, [form.quantitytoH.data])
+                    except:
+                        flash("Error de conexión a la base de datos")
+                        return render_template("exchanges.html", formulary=form)
+                        
                 return redirect(url_for("movements"))
             else:
                 flash("¡Debe de hacer el calculo antes de guardar el movimiento!")
@@ -102,7 +137,7 @@ def investment():
     try:
         dates = manager.consultation(consult)
     except:
-        flash("Error de conexion a la base de datos")
+        flash("Error de conexión a la base de datos")
         return render_template("status.html")
     cont = 0
     eur = "EUR"
@@ -129,6 +164,9 @@ def investment():
 @app.route("/saldo")
 def saldo():
     consult = "SELECT * FROM saldo"
-    saldo_list = manager.consultation(consult)
-    return render_template('saldo.html', items=saldo_list)
-    
+    try:
+        saldo_list = manager.consultation(consult)
+    except:
+        flash("Error de conexión a la base de datos")
+        return render_template('saldo.html', items="")        
+    return render_template('saldo.html', items=saldo_list)    
