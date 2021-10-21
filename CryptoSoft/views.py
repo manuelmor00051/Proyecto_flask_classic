@@ -1,3 +1,4 @@
+from werkzeug.utils import bind_arguments
 from . import app
 from CryptoSoft.forms import Form
 from flask import render_template, flash, request, url_for, redirect
@@ -110,13 +111,20 @@ def investment():
             if key != "inversión" and dates[i][key] > 0:
                 try:
                     cant = ConectApi.conecta(key, eur, api_key)
-                    cont += cant
+                    cont += (cant * dates[i][key])
                 except:
                     flash("Error de conexión con la API")
                     return render_template("status.html")
 
-                
-    return render_template("status.html", value = cont, inv = dates[0]["inversión"])
+    status = cont - dates[0]["inversión"]
+    if status < 0:
+        status *= -1
+        BP = "Perdidas"
+    elif status == 0:
+        BP = ""
+    else:
+        BP = "Ganancias"            
+    return render_template("status.html", inv = dates[0]["inversión"], result = status, B_P = BP)
 
 @app.route("/saldo")
 def saldo():
