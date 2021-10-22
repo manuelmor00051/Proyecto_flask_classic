@@ -1,11 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import validators
 from wtforms.fields.core import FloatField
 from wtforms.fields.simple import HiddenField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
 from wtforms import SelectField
-from CryptoSoft.models import BBDDoperations
-from . import app
 
 class Form(FlaskForm):
     coinsfrom = SelectField(u'Seleccione criptomoneda', choices = [])
@@ -18,12 +15,3 @@ class Form(FlaskForm):
     quantitytoH = HiddenField()
     submit = SubmitField('Aceptar')
     calculadora = SubmitField('Calcular')
-
-def load_avaible_coins(form):
-    url_BBDates = app.config.get("BASE_DE_DATOS")
-    manager = BBDDoperations(url_BBDates)
-    coins = manager.getAvaibleCoins()
-    lista = ["--Seleccione Criptomoneda--", "EUR"]
-    for coin in coins:
-        lista.append(coin)
-    form.coinsfrom.choices = lista

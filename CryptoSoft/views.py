@@ -1,5 +1,5 @@
 from . import app
-from CryptoSoft.forms import Form, load_avaible_coins
+from CryptoSoft.forms import Form
 from flask import render_template, flash, request, url_for, redirect
 from CryptoSoft.models import *
 from datetime import datetime
@@ -22,10 +22,9 @@ def movements():
 
 @app.route("/purchase", methods=['GET', 'POST'])
 def exchanges():
-    lista=[("EUR", "EUR")]
     form = Form()
     try:
-        load_avaible_coins(form)
+       form.coinsfrom.choices = manager.getAvaibleCoins()
     except:
         flash("Error de conexión a la base de datos")
         return render_template("exchanges.html", formulary=form)
@@ -35,7 +34,7 @@ def exchanges():
         if form.validate():
             if form.calculadora.data:
                 form.quantityfromH.data = form.quantityfrom.data
-                if form.coinsfrom.data != 'EUR' and form.coinsfrom.data != "--Seleccione Criptomoneda--":
+                if form.coinsfrom.data != 'EUR' and form.coinsfrom.data != "--Seleccione moneda origen--":
                     try:
                         cantcoin = manager.consultation("SELECT {} FROM saldo".format(form.coinsfrom.data))
                     except:
@@ -45,7 +44,7 @@ def exchanges():
                     if float(form.quantityfromH.data) > maxsale:
                         flash("No puede invertir una cantidad superior al saldo disponible")
                         return render_template("exchanges.html", formulary=form)
-                if form.coinsfrom.data == "--Seleccione Criptomoneda--":
+                if form.coinsfrom.data == "--Seleccione moneda origen--":
                     flash("Debe seleccionar una criptomoneda origen")
                     return render_template("exchanges.html", formulary=form)
 
@@ -154,12 +153,12 @@ def investment():
     status = cont - dates[0]["inversión"]
     if status < 0:
         status *= -1
-        BP = "Perdidas"
+        GP = "Perdidas"
     elif status == 0:
-        BP = ""
+        GP = ""
     else:
-        BP = "Ganancias"            
-    return render_template("status.html", inv = dates[0]["inversión"], result = status, B_P = BP)
+        GP = "Ganancias"            
+    return render_template("status.html", inv = dates[0]["inversión"], result = status, G_P = GP)
 
 @app.route("/saldo")
 def saldo():

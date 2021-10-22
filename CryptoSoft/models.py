@@ -42,7 +42,7 @@ class BBDDoperations():
         quantities = cur.fetchall()
         quantities = quantities[0]
 
-        keys = []
+        keys = ["--Seleccione moneda origen--", "EUR"]
         for index in range(len(cur.description)):
             if quantities[index] > 0:
                 if cur.description[index][0] == "inversión":
@@ -52,7 +52,6 @@ class BBDDoperations():
 
         con.close()
         return keys
-
 
 class ConectApi():
     def conecta(fcoin, tcoin, api_key):
