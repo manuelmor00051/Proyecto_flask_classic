@@ -6,7 +6,9 @@ from wtforms import SelectField
 
 class Form(FlaskForm):
     coinsfrom = SelectField(u'Seleccione criptomoneda', choices = [])
+    coinsfromH = HiddenField()
     coinsto = SelectField(u'Seleccione criptomoneda', choices=[('0', '--Seleccione criptomoneda--'), ('EUR', 'EUR'), ('ETH', 'ETH'), ('LTC', 'LTC'), ('BNB', 'BNB'), ('EOS', 'EOS'), ('XLM', 'XLM'), ('TRX', 'TRX'), ('BTC', 'BTC'), ('XRP', 'XRP'), ('BCH', 'BCH'), ('USDT', 'USDT'), ('BSV', 'BSV'), ('ADA', 'ADA')])
+    coinstoH = HiddenField()
     quantityfrom = FloatField("Q: ", validators=[DataRequired(message="debe informar una cantidad"), NumberRange(message="debe informar una cantidad positiva", min=0.01)])
     quantityfromH = HiddenField()
     pu = FloatField("P.U.: ")

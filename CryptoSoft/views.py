@@ -63,7 +63,9 @@ def exchanges():
                     flash("Error de conexión con la API")
                     return render_template("exchanges.html", formulary=form)
                 form.puH.data = form.pu.data
-                form.quantityto.data = float(form.quantityfromH.data) / form.pu.data
+                form.coinsfromH.data = form.coinsfrom.data
+                form.coinstoH.data = form.coinsto.data
+                form.quantityto.data = float(form.quantityfromH.data) / form.puH.data
                 form.quantitytoH.data = form.quantityto.data
                 return render_template("exchanges.html", formulary=form)
 
@@ -73,46 +75,46 @@ def exchanges():
                 hora = "{}:{}".format(now.hour, now.minute)
 
                 consult = "INSERT INTO movimientos (fecha, hora, coinsfrom, qf, coinsto, qt, pu) VALUES (?, ?, ?, ?, ?, ?, ?)"
-                lista = [fecha, hora, form.coinsfrom.data, form.quantityfromH.data, form.coinsto.data, form.quantitytoH.data, form.puH.data]
+                lista = [fecha, hora, form.coinsfromH.data, form.quantityfromH.data, form.coinstoH.data, form.quantitytoH.data, form.puH.data]
                 try:
                     manager.recordMovements(consult, lista)
                 except:
                     flash("Error de conexión a la base de datos")
                     return render_template("exchanges.html", formulary=form)
-                if form.coinsfrom.data == 'EUR':
+                if form.coinsfromH.data == 'EUR':
                     consult = "UPDATE saldo SET inversión = inversión + ?"
                     try:
                         manager.recordMovements(consult, [form.quantityfromH.data])
                     except:
                         flash("Error de conexión a la base de datos")
                         return render_template("exchanges.html", formulary=form)
-                    consult = "UPDATE saldo SET {} = {} + ?".format(form.coinsto.data, form.coinsto.data)
+                    consult = "UPDATE saldo SET {} = {} + ?".format(form.coinstoH.data, form.coinstoH.data)
                     try:
                         manager.recordMovements(consult, [form.quantitytoH.data])
                     except:
                         flash("Error de conexión a la base de datos")
                         return render_template("exchanges.html", formulary=form)
-                elif form.coinsto.data == 'EUR':
+                elif form.coinstoH.data == 'EUR':
                     consult = "UPDATE saldo SET inversión = inversión - ?"
                     try:
                         manager.recordMovements(consult, [form.quantitytoH.data])
                     except:
                         flash("Error de conexión a la base de datos")
                         return render_template("exchanges.html", formulary=form)
-                    consult = "UPDATE saldo SET {} = {} - ?".format(form.coinsfrom.data, form.coinsfrom.data)
+                    consult = "UPDATE saldo SET {} = {} - ?".format(form.coinsfromH.data, form.coinsfromH.data)
                     try:
                         manager.recordMovements(consult, [form.quantityfromH.data])
                     except:
                         flash("Error de conexión a la base de datos")
                         return render_template("exchanges.html", formulary=form)
                 else:
-                    consult = "UPDATE saldo SET {} = {} - ?".format(form.coinsfrom.data, form.coinsfrom.data)
+                    consult = "UPDATE saldo SET {} = {} - ?".format(form.coinsfromH.data, form.coinsfromH.data)
                     try:
                         manager.recordMovements(consult, [form.quantityfromH.data])
                     except:
                         flash("Error de conexión a la base de datos")
                         return render_template("exchanges.html", formulary=form)
-                    consult = "UPDATE saldo SET {} = {} + ?".format(form.coinsto.data, form.coinsto.data)
+                    consult = "UPDATE saldo SET {} = {} + ?".format(form.coinstoH.data, form.coinstoH.data)
                     try:
                         manager.recordMovements(consult, [form.quantitytoH.data])
                     except:
@@ -124,9 +126,9 @@ def exchanges():
                 flash("¡Debe de hacer el calculo antes de guardar el movimiento!")
                 return render_template("exchanges.html", formulary=form)
         else:
-            if form.quantityfrom.data == None:
+            if form.quantityfromH.data == None:
                     flash("La cantidad origen debe ser de tipo numérico")
-            elif form.quantityfrom.data <= 0:
+            elif form.quantityfromH.data <= 0:
                     flash("La cantidad debe ser un numero positivo mayor que 0")
             return render_template("exchanges.html", formulary=form) 
 

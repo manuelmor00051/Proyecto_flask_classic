@@ -14,13 +14,23 @@
         <div>
             <label for="coinsfrom">From:</label>
             {{ formulary.coinsfrom }}
+            {% for error in formulary.coinsfrom.error %}
+            <p class="error">{{ error }}</p>
+            {% endfor %}
 
             <label for="coinsto" id="to1">to:</label>
             {{ formulary.coinsto }}
+            {% for error in formulary.coinsto.error %}
+            <p class="error">{{ error }}</p>
+            {% endfor %}
         </div>
         <div class="formularyfield">
             {{ formulary.quantityfrom.label() }}
             {{ formulary.quantityfrom() }}
+            {% for error in formulary.quantityfrom.error %}
+            <p class="error">{{ error }}</p>
+            {% endfor %}
+
         </div>
         <div>
             <label id="to" for="quantityto">Q:</label><p id="quantities" style="display: inline-block;">{{ formulary.quantityto.data }}</p>
