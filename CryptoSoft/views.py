@@ -4,12 +4,21 @@ from flask import render_template, flash, request, url_for, redirect
 from CryptoSoft.models import *
 from datetime import datetime
 
-url_BBDDates = app.config.get("BASE_DE_DATOS")
+url_BBDDates = "data/movementsDates.db"
 manager = BBDDoperations(url_BBDDates)
+manager.urlCreate()
+manager.create_tables()
+
 api_key = app.config.get("API_KEY")
 
 @app.route("/")
 def movements():
+    try:
+        manager.create_tables()
+    except:
+        flash("Error al crear la base de datos")
+        return render_template("movements.html")
+        
     consult = "SELECT * FROM Movimientos ORDER BY fecha"
     try:
         movements_list = manager.consultation(consult)
@@ -23,6 +32,12 @@ def movements():
 @app.route("/purchase", methods=['GET', 'POST'])
 def exchanges():
     form = Form()
+    try:
+        manager.fix_saldo_if_empty()
+    except:
+        flash("No se encuentra la base de datos, reinicie la aplicación o consulte al proveedor")
+        return(render_template('exchanges.html', formulary=form))
+
     try:
        form.coinsfrom.choices = manager.getAvaibleCoins()
     except:
@@ -134,6 +149,12 @@ def exchanges():
 
 @app.route("/status")
 def investment():
+    try:
+        manager.fix_saldo_if_empty()
+    except:
+        flash("No se encuentra la base de datos, reinicie la aplicación o consulte al proveedor")
+        return(render_template('status.html'))
+
     consult = "SELECT * FROM saldo"
     try:
         dates = manager.consultation(consult)
@@ -164,6 +185,12 @@ def investment():
 
 @app.route("/saldo")
 def saldo():
+    try:
+        manager.fix_saldo_if_empty()
+    except:
+        flash("No se encuentra la base de datos, reinicie la aplicación o consulte al proveedor")
+        return(render_template('saldo.html', items=""))
+
     consult = "SELECT * FROM saldo"
     try:
         saldo_list = manager.consultation(consult)

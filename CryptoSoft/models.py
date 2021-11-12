@@ -2,11 +2,44 @@ import sqlite3
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 from requests.sessions import Session
 import json
+import os
 
 class BBDDoperations():
     def __init__(self, url_BBDDates):
         self.url_BBDDates = url_BBDDates
+
+    def urlCreate(self):
+        urlActual = os.getcwd()
+        try:
+            os.stat("{}/data/".format(urlActual))
+        except:
+            url = ("{}/data/".format(urlActual))
+            os.mkdir(url)
+
+    def create_tables(self):
+        con = sqlite3.connect(self.url_BBDDates)
+        cur = con.cursor()
+        cur.execute("CREATE TABLE if not exists Movimientos (fecha TEXT NOT NULL, hora TEXT NOT NULL, coinsfrom REAL NOT NULL, qf REAL NOT NULL, coinsto REAL NOT NULL, qt REAL NOT NULL, pu REAL NOT NULL)")
+        cur.execute("CREATE TABLE if not exists saldo (ETH REAL NOT NULL, LTC REAL NOT NULL, BNB REAL NOT NULL, EOS REAL NOT NULL, XLM REAL NOT NULL, TRX REAL NOT NULL, BTC REAL NOT NULL, XRP	REAL NOT NULL, BCH	REAL NOT NULL, USDT REAL NOT NULL, BSV REAL NOT NULL, ADA REAL NOT NULL, inversión REAL NOT NULL)")
+        con.close() 
+        self.fix_saldo_if_empty()   
     
+    def fix_saldo_if_empty(self):
+        con = sqlite3.connect(self.url_BBDDates)
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM saldo")
+        lentable = cur.fetchall()
+        con.close()
+        if lentable[0][0] == 0:
+            self.insertZeros()
+
+    def insertZeros(self):
+        con = sqlite3.connect(self.url_BBDDates)
+        cur = con.cursor()
+        cur.execute("INSERT INTO saldo VALUES(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)")
+        con.commit()
+        con.close()
+
     def consultation(self, consult, params=[]):
         con = sqlite3.connect(self.url_BBDDates)
         cur = con.cursor()
